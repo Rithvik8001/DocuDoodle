@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Copy, Download } from "lucide-react";
 import { AboutSection } from "../types/about";
 import { SkillsSection } from "../types/skills";
@@ -25,13 +25,32 @@ export default function ReadmeSheet({
   addOnsData,
 }: ReadmeSheetProps) {
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [readmeContent, setReadmeContent] = useState<string | null>(null);
 
-  const generateReadme = () => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Validation
+    if (!aboutData.title?.trim()) {
+      setError("Please enter a title for your README");
+      setReadmeContent(null);
+      return;
+    }
+    if (!aboutData.subtitle?.trim()) {
+      setError("Please enter a subtitle for your README");
+      setReadmeContent(null);
+      return;
+    }
+
+    setError(null);
     let content = "";
 
     // Title and subtitle
     content += `<h1 align="center">${aboutData.title}</h1>\n\n`;
-    content += `<h3 align="center">${aboutData.subtitle}</h3>\n\n`;
+    if (aboutData.subtitle.trim()) {
+      content += `<h3 align="center">${aboutData.subtitle}</h3>\n\n`;
+    }
 
     // About section
     if (aboutData.about) {
@@ -171,19 +190,19 @@ export default function ReadmeSheet({
       }
     }
 
-    return content;
-  };
+    setReadmeContent(content);
+  }, [isOpen, aboutData, skillsData, socialsData, addOnsData]);
 
   const handleCopy = async () => {
-    const readme = generateReadme();
-    await navigator.clipboard.writeText(readme);
+    if (!readmeContent) return;
+    await navigator.clipboard.writeText(readmeContent);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleDownload = () => {
-    const readme = generateReadme();
-    const blob = new Blob([readme], { type: "text/markdown" });
+    if (!readmeContent) return;
+    const blob = new Blob([readmeContent], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -215,18 +234,27 @@ export default function ReadmeSheet({
           </p>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
+
         {/* Action buttons */}
         <div className="flex gap-4 mb-8">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            disabled={!readmeContent}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Copy size={20} />
             {copied ? "Copied!" : "Copy to Clipboard"}
           </button>
           <button
             onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            disabled={!readmeContent}
+            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download size={20} />
             Download README.md
@@ -236,7 +264,7 @@ export default function ReadmeSheet({
         {/* Preview */}
         <div className="bg-gray-100 rounded-lg p-6 border border-gray-300">
           <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800">
-            {generateReadme()}
+            {readmeContent || "Please fill in the required fields"}
           </pre>
         </div>
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import AboutSection from "./components/AboutSection";
-import SkillsSection from "./components/SkillsSection";
+import SkillsSection, { initialCategories } from "./components/SkillsSection";
 import SocialsSection from "./components/SocialsSection";
 import AddOnsSection from "./components/AddOnsSection";
 import GenerateButton from "./components/GenerateButton";
@@ -30,7 +30,7 @@ export default function Home() {
     funFact: "",
   });
   const [skillsData, setSkillsData] = useState<SkillsSectionType>({
-    categories: [],
+    categories: initialCategories,
   });
   const [socialsData, setSocialsData] = useState<SocialsSectionType>({
     socials: [],

@@ -10,7 +10,7 @@ import {
 import { Check, X } from "lucide-react";
 
 // Predefined skill categories and skills
-const initialCategories: SkillCategory[] = [
+export const initialCategories: SkillCategory[] = [
   {
     name: "Frontend",
     skills: [
@@ -401,7 +401,15 @@ export default function SkillsSection({ onDataChange }: SkillsSectionProps) {
     setSkillsData((prev) => {
       const newCategories = [...prev.categories];
       const category = { ...newCategories[categoryIndex] };
-      const skills = [...category.skills, { name: "", selected: true }];
+      const skills = [
+        ...category.skills,
+        {
+          name: "",
+          selected: true,
+          url: "",
+          icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/custom/custom-original.svg",
+        },
+      ];
 
       category.skills = skills;
       newCategories[categoryIndex] = category;
