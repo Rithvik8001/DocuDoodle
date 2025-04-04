@@ -1,6 +1,8 @@
 export interface Skill {
   name: string;
   selected: boolean;
+  url: string;
+  icon: string;
 }
 
 export interface SkillCategory {

@@ -1,6 +1,6 @@
 export interface Badge {
   id: string;
-  type: "github" | "social" | "tech" | "custom";
+  type: "github" | "social" | "tech";
   name: string;
   url: string;
   selected: boolean;
@@ -8,9 +8,9 @@ export interface Badge {
 
 export interface Stat {
   id: string;
-  type: "github" | "custom";
+  type: "github";
   name: string;
-  value: string;
+  url: string;
   selected: boolean;
 }
 
@@ -21,10 +21,24 @@ export interface Quote {
   selected: boolean;
 }
 
+export interface GitHubStats {
+  selected: boolean;
+  username: string;
+  theme: string;
+}
+
+export interface AddOnsSectionType {
+  badges: Badge[];
+  statistics: Stat[];
+  quotes: Quote[];
+  githubStats: GitHubStats;
+}
+
 export interface AddOnsSection {
   badges: Badge[];
-  stats: Stat[];
+  statistics: Stat[];
   quotes: Quote[];
+  githubStats: GitHubStats;
   showProfileViews: boolean;
   showStreak: boolean;
   showTopLanguages: boolean;

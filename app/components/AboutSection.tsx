@@ -62,7 +62,12 @@ export default function AboutSection({ onDataChange }: AboutSectionProps) {
   const addProject = (
     field: "workProjects" | "collaborationProjects" | "helpProjects"
   ) => {
-    const newProject: Project = { name: "", link: "" };
+    const newProject: Project = {
+      name: "",
+      link: "",
+      description: "",
+      technologies: [],
+    };
     setData((prev) => ({
       ...prev,
       [field]: [...prev[field], newProject],
@@ -70,20 +75,29 @@ export default function AboutSection({ onDataChange }: AboutSectionProps) {
   };
 
   const removeProject = (
-    field: "workProjects" | "collaborationProjects" | "helpProjects",
+    type: "work" | "collaboration" | "help",
     index: number
   ) => {
-    setData((prev) => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
-    }));
+    const projectArray =
+      type === "work"
+        ? "workProjects"
+        : type === "collaboration"
+        ? "collaborationProjects"
+        : "helpProjects";
+
+    const updatedProjects = [...data[projectArray]];
+    updatedProjects.splice(index, 1);
+
+    handleDataChange({
+      [projectArray]: updatedProjects,
+    });
   };
 
   const updateProject = (
     field: "workProjects" | "collaborationProjects" | "helpProjects",
     index: number,
     key: keyof Project,
-    value: string
+    value: string | string[]
   ) => {
     setData((prev) => ({
       ...prev,
@@ -162,13 +176,41 @@ export default function AboutSection({ onDataChange }: AboutSectionProps) {
                 />
                 {data.workProjects.length > 1 && (
                   <button
-                    onClick={() => removeProject("workProjects", index)}
+                    onClick={() => removeProject("work", index)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
                 )}
               </div>
+              <textarea
+                value={project.description}
+                onChange={(e) =>
+                  updateProject(
+                    "workProjects",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                placeholder="Project Description"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+                rows={3}
+              />
+              <input
+                type="text"
+                value={project.technologies.join(", ")}
+                onChange={(e) =>
+                  updateProject(
+                    "workProjects",
+                    index,
+                    "technologies",
+                    e.target.value.split(",").map((tech) => tech.trim())
+                  )
+                }
+                placeholder="Technologies (comma-separated)"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+              />
             </div>
           ))}
           <button
@@ -227,15 +269,41 @@ export default function AboutSection({ onDataChange }: AboutSectionProps) {
                 />
                 {data.collaborationProjects.length > 1 && (
                   <button
-                    onClick={() =>
-                      removeProject("collaborationProjects", index)
-                    }
+                    onClick={() => removeProject("collaboration", index)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
                 )}
               </div>
+              <textarea
+                value={project.description}
+                onChange={(e) =>
+                  updateProject(
+                    "collaborationProjects",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                placeholder="Project Description"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+                rows={3}
+              />
+              <input
+                type="text"
+                value={project.technologies.join(", ")}
+                onChange={(e) =>
+                  updateProject(
+                    "collaborationProjects",
+                    index,
+                    "technologies",
+                    e.target.value.split(",").map((tech) => tech.trim())
+                  )
+                }
+                placeholder="Technologies (comma-separated)"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+              />
             </div>
           ))}
           <button
@@ -282,13 +350,41 @@ export default function AboutSection({ onDataChange }: AboutSectionProps) {
                 />
                 {data.helpProjects.length > 1 && (
                   <button
-                    onClick={() => removeProject("helpProjects", index)}
+                    onClick={() => removeProject("help", index)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
                   </button>
                 )}
               </div>
+              <textarea
+                value={project.description}
+                onChange={(e) =>
+                  updateProject(
+                    "helpProjects",
+                    index,
+                    "description",
+                    e.target.value
+                  )
+                }
+                placeholder="Project Description"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+                rows={3}
+              />
+              <input
+                type="text"
+                value={project.technologies.join(", ")}
+                onChange={(e) =>
+                  updateProject(
+                    "helpProjects",
+                    index,
+                    "technologies",
+                    e.target.value.split(",").map((tech) => tech.trim())
+                  )
+                }
+                placeholder="Technologies (comma-separated)"
+                className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black col-span-2"
+              />
             </div>
           ))}
           <button

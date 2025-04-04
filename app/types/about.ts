@@ -1,6 +1,8 @@
 export interface Project {
   name: string;
   link: string;
+  description: string;
+  technologies: string[];
 }
 
 export interface AboutSection {

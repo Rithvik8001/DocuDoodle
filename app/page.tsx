@@ -78,7 +78,7 @@ export default function Home() {
             <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500"></div>
             <div className="absolute -bottom-4 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-yellow-500"></div>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-700 mt-4">
+          <p className="text-2xl md:text-2xl text-gray-700 mt-4 tracking-tight font-semibold">
             Create Beautiful GitHub READMEs
           </p>
         </div>

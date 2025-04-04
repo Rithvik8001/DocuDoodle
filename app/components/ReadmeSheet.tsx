@@ -27,125 +27,139 @@ export default function ReadmeSheet({
   const [copied, setCopied] = useState(false);
 
   const generateReadme = () => {
-    let readme = "";
+    let content = "";
 
-    // Title and subtitle with HTML alignment
-    if (aboutData.title) {
-      readme += `<h1 align="center">${aboutData.title}</h1>\n\n`;
-    }
-    if (aboutData.subtitle) {
-      readme += `<h3 align="center">${aboutData.subtitle}</h3>\n\n`;
-    }
+    // Title and subtitle
+    content += `<h1 align="center">${aboutData.title}</h1>\n\n`;
+    content += `<h3 align="center">${aboutData.subtitle}</h3>\n\n`;
 
     // About section
     if (aboutData.about) {
-      readme += `## About Me\n\n${aboutData.about}\n\n`;
+      content += `## About Me\n\n${aboutData.about}\n\n`;
     }
 
     // Work projects
     if (aboutData.workProjects.length > 0) {
-      readme += `## Work Projects\n\n`;
+      content += `## Work Projects\n\n`;
       aboutData.workProjects.forEach((project) => {
-        readme += `- [${project.name}](${project.link})\n`;
-      });
-      readme += "\n";
-    }
-
-    // Collaboration projects
-    if (aboutData.collaborationProjects.length > 0) {
-      readme += `## Collaboration Projects\n\n`;
-      aboutData.collaborationProjects.forEach((project) => {
-        readme += `- [${project.name}](${project.link})\n`;
-      });
-      readme += "\n";
-    }
-
-    // Help projects
-    if (aboutData.helpProjects.length > 0) {
-      readme += `## Help Projects\n\n`;
-      aboutData.helpProjects.forEach((project) => {
-        readme += `- [${project.name}](${project.link})\n`;
-      });
-      readme += "\n";
-    }
-
-    // Skills section
-    if (skillsData.categories.length > 0) {
-      readme += `## Skills\n\n`;
-      skillsData.categories.forEach((category) => {
-        if (category.skills.some((skill) => skill.selected)) {
-          readme += `### ${category.name}\n\n`;
-          category.skills
-            .filter((skill) => skill.selected)
-            .forEach((skill) => {
-              readme += `- ${skill.name}\n`;
-            });
-          readme += "\n";
+        content += `### ${project.name}\n\n`;
+        content += `${project.description}\n\n`;
+        if (project.technologies.length > 0) {
+          content += `**Technologies:** ${project.technologies.join(", ")}\n\n`;
+        }
+        if (project.link) {
+          content += `[View Project](${project.link})\n\n`;
         }
       });
     }
 
-    // Socials section
-    if (socialsData.socials.length > 0) {
-      readme += `## Connect With Me\n\n`;
-      socialsData.socials
-        .filter((social) => social.selected)
-        .forEach((social) => {
-          readme += `- [${social.platform}](${social.url})\n`;
-        });
-      readme += "\n";
+    // Collaboration projects
+    if (aboutData.collaborationProjects.length > 0) {
+      content += `## Collaboration Projects\n\n`;
+      aboutData.collaborationProjects.forEach((project) => {
+        content += `### ${project.name}\n\n`;
+        content += `${project.description}\n\n`;
+        if (project.technologies.length > 0) {
+          content += `**Technologies:** ${project.technologies.join(", ")}\n\n`;
+        }
+        if (project.link) {
+          content += `[View Project](${project.link})\n\n`;
+        }
+      });
     }
 
-    // Badges
-    if (addOnsData.badges.length > 0) {
-      readme += `## Badges\n\n`;
-      addOnsData.badges
-        .filter((badge) => badge.selected)
-        .forEach((badge) => {
-          readme += `![${badge.name}](${badge.url})\n`;
-        });
-      readme += "\n";
+    // Help projects
+    if (aboutData.helpProjects.length > 0) {
+      content += `## Help Projects\n\n`;
+      aboutData.helpProjects.forEach((project) => {
+        content += `### ${project.name}\n\n`;
+        content += `${project.description}\n\n`;
+        if (project.technologies.length > 0) {
+          content += `**Technologies:** ${project.technologies.join(", ")}\n\n`;
+        }
+        if (project.link) {
+          content += `[View Project](${project.link})\n\n`;
+        }
+      });
     }
 
-    // GitHub stats
-    if (addOnsData.showProfileViews) {
-      readme += `![Profile Views](https://komarev.com/ghpvc/?username=YOUR_USERNAME&style=flat-square)\n\n`;
+    // Skills section
+    const hasSelectedSkills = skillsData.categories.some((category) =>
+      category.skills.some((skill) => skill.selected)
+    );
+    if (hasSelectedSkills) {
+      content += `## Skills\n\n`;
+      skillsData.categories.forEach((category) => {
+        const selectedSkills = category.skills.filter(
+          (skill) => skill.selected
+        );
+        if (selectedSkills.length > 0) {
+          content += `### ${category.name}\n\n`;
+          content += `<p align="left">\n`;
+          selectedSkills.forEach((skill) => {
+            content += `<a href="${skill.url}" target="_blank" rel="noreferrer"><img src="${skill.icon}" alt="${skill.name}" width="40" height="40"/></a>\n`;
+          });
+          content += `</p>\n\n`;
+        }
+      });
     }
 
-    if (addOnsData.showStreak) {
-      readme += `![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=dark)\n\n`;
+    // Social section
+    const hasSocials = socialsData.socials.some((social) => social.selected);
+    if (hasSocials) {
+      content += `## Social\n\n`;
+      content += `<p align="left">\n`;
+      socialsData.socials.forEach((social) => {
+        if (social.selected) {
+          content += `<a href="${social.url}" target="_blank" rel="noreferrer"><img src="${social.icon}" alt="${social.platform}" width="40" height="40"/></a>\n`;
+        }
+      });
+      content += `</p>\n\n`;
     }
 
-    if (addOnsData.showTopLanguages) {
-      readme += `![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=YOUR_USERNAME&layout=compact&theme=dark)\n\n`;
+    // Badges section
+    const selectedBadges = addOnsData.badges.filter((badge) => badge.selected);
+    if (selectedBadges.length > 0) {
+      content += `## Badges\n\n`;
+      content += `<p align="left">\n`;
+      selectedBadges.forEach((badge) => {
+        content += `<img src="${badge.url}" alt="${badge.name}" width="100" height="100"/>\n`;
+      });
+      content += `</p>\n\n`;
     }
 
-    if (addOnsData.showContributions) {
-      readme += `![GitHub Activity Graph](https://activity-graph.herokuapp.com/graph?username=YOUR_USERNAME&theme=github)\n\n`;
+    // GitHub Stats section
+    if (addOnsData.githubStats.selected) {
+      content += `## GitHub Stats\n\n`;
+      content += `<p align="left">\n`;
+      content += `<img src="https://github-readme-stats.vercel.app/api?username=${addOnsData.githubStats.username}&show_icons=true&theme=${addOnsData.githubStats.theme}" alt="GitHub Stats" />\n`;
+      content += `</p>\n\n`;
     }
 
-    // Statistics
-    if (addOnsData.stats.length > 0) {
-      readme += `## Statistics\n\n`;
-      addOnsData.stats
-        .filter((stat) => stat.selected)
-        .forEach((stat) => {
-          readme += `${stat.value}\n`;
-        });
-      readme += "\n";
+    // Statistics section
+    const selectedStats = addOnsData.statistics.filter((stat) => stat.selected);
+    if (selectedStats.length > 0) {
+      content += `## Statistics\n\n`;
+      content += `<p align="left">\n`;
+      selectedStats.forEach((stat) => {
+        content += `<img src="${stat.url}" alt="${stat.name}" width="100" height="100"/>\n`;
+      });
+      content += `</p>\n\n`;
     }
 
-    // Quotes
-    if (addOnsData.quotes.length > 0) {
-      readme += `## Quotes\n\n`;
-      addOnsData.quotes
-        .filter((quote) => quote.selected)
-        .forEach((quote) => {
-          readme += `> "${quote.text}"\n> > — ${quote.author}\n\n`;
-        });
+    // Quotes section
+    const selectedQuotes = addOnsData.quotes.filter((quote) => quote.selected);
+    if (selectedQuotes.length > 0) {
+      content += `## Quotes\n\n`;
+      selectedQuotes.forEach((quote) => {
+        content += `> ${quote.text}\n\n`;
+        if (quote.author) {
+          content += `> — ${quote.author}\n\n`;
+        }
+      });
     }
 
-    return readme;
+    return content;
   };
 
   const handleCopy = async () => {
@@ -176,7 +190,7 @@ export default function ReadmeSheet({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors shadow-md"
         >
           <X size={24} />
         </button>
@@ -213,6 +227,33 @@ export default function ReadmeSheet({
             {generateReadme()}
           </pre>
         </div>
+
+        {/* Social Links */}
+        {socialsData.socials.filter((social) => social.selected).length > 0 && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">Social</h2>
+            <div className="flex flex-wrap gap-4 mb-8">
+              {socialsData.socials
+                .filter((social) => social.selected)
+                .map((social) => (
+                  <a
+                    key={social.id}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-lg border-2 border-black shadow-[2px_2px_0_#000] transition-all duration-200 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]"
+                  >
+                    <img
+                      src={social.icon}
+                      alt={social.platform}
+                      className="w-5 h-5"
+                    />
+                    <span className="font-medium">{social.platform}</span>
+                  </a>
+                ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

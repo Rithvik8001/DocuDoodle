@@ -6,7 +6,7 @@ import {
   Badge,
   Stat,
   Quote,
-  AddOnsSectionProps,
+  GitHubStats,
 } from "../types/addons";
 import {
   Check,
@@ -29,183 +29,22 @@ import {
   Heart,
   Quote as QuoteIcon,
 } from "lucide-react";
+import { initialBadges, initialStats, initialQuotes } from "../data/addons";
 
-// Predefined badges
-const initialBadges: Badge[] = [
-  // GitHub badges
-  {
-    id: "github-stars",
-    type: "github",
-    name: "GitHub Stars",
-    url: "https://img.shields.io/github/stars/username/repo",
-    selected: false,
-  },
-  {
-    id: "github-forks",
-    type: "github",
-    name: "GitHub Forks",
-    url: "https://img.shields.io/github/forks/username/repo",
-    selected: false,
-  },
-  {
-    id: "github-issues",
-    type: "github",
-    name: "GitHub Issues",
-    url: "https://img.shields.io/github/issues/username/repo",
-    selected: false,
-  },
-  {
-    id: "github-license",
-    type: "github",
-    name: "GitHub License",
-    url: "https://img.shields.io/github/license/username/repo",
-    selected: false,
-  },
-
-  // Social badges
-  {
-    id: "twitter",
-    type: "social",
-    name: "Twitter",
-    url: "https://img.shields.io/twitter/follow/username?style=social",
-    selected: false,
-  },
-  {
-    id: "linkedin",
-    type: "social",
-    name: "LinkedIn",
-    url: "https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin",
-    selected: false,
-  },
-  {
-    id: "dev-to",
-    type: "social",
-    name: "Dev.to",
-    url: "https://img.shields.io/badge/dev.to-0A0A0A?style=for-the-badge&logo=dev.to&logoColor=white",
-    selected: false,
-  },
-  {
-    id: "medium",
-    type: "social",
-    name: "Medium",
-    url: "https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white",
-    selected: false,
-  },
-
-  // Tech badges
-  {
-    id: "react",
-    type: "tech",
-    name: "React",
-    url: "https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB",
-    selected: false,
-  },
-  {
-    id: "typescript",
-    type: "tech",
-    name: "TypeScript",
-    url: "https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white",
-    selected: false,
-  },
-  {
-    id: "javascript",
-    type: "tech",
-    name: "JavaScript",
-    url: "https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black",
-    selected: false,
-  },
-  {
-    id: "nodejs",
-    type: "tech",
-    name: "Node.js",
-    url: "https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white",
-    selected: false,
-  },
-  {
-    id: "python",
-    type: "tech",
-    name: "Python",
-    url: "https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white",
-    selected: false,
-  },
-  {
-    id: "swift",
-    type: "tech",
-    name: "Swift",
-    url: "https://img.shields.io/badge/Swift-FA7343?style=for-the-badge&logo=swift&logoColor=white",
-    selected: false,
-  },
-];
-
-// Predefined stats
-const initialStats: Stat[] = [
-  {
-    id: "github-repos",
-    type: "github",
-    name: "GitHub Repositories",
-    value:
-      "![GitHub Repositories](https://img.shields.io/github/repo-count/username)",
-    selected: false,
-  },
-  {
-    id: "github-followers",
-    type: "github",
-    name: "GitHub Followers",
-    value:
-      "![GitHub Followers](https://img.shields.io/github/followers/username?style=social)",
-    selected: false,
-  },
-  {
-    id: "github-contributions",
-    type: "github",
-    name: "GitHub Contributions",
-    value:
-      "![GitHub Contributions](https://img.shields.io/github/contributions/username/username)",
-    selected: false,
-  },
-  {
-    id: "github-streak",
-    type: "github",
-    name: "GitHub Streak",
-    value:
-      "![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=username&theme=default)",
-    selected: false,
-  },
-];
-
-// Predefined quotes
-const initialQuotes: Quote[] = [
-  {
-    id: "quote1",
-    text: "The only way to do great work is to love what you do.",
-    author: "Steve Jobs",
-    selected: false,
-  },
-  {
-    id: "quote2",
-    text: "Code is poetry.",
-    author: "WordPress",
-    selected: false,
-  },
-  {
-    id: "quote3",
-    text: "First, solve the problem. Then, write the code.",
-    author: "John Johnson",
-    selected: false,
-  },
-  {
-    id: "quote4",
-    text: "Talk is cheap. Show me the code.",
-    author: "Linus Torvalds",
-    selected: false,
-  },
-];
+interface AddOnsSectionProps {
+  onDataChange: (data: AddOnsSectionType) => void;
+}
 
 export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
   const [data, setData] = useState<AddOnsSectionType>({
     badges: initialBadges,
-    stats: initialStats,
+    statistics: initialStats,
     quotes: initialQuotes,
+    githubStats: {
+      selected: false,
+      username: "",
+      theme: "dark",
+    },
     showProfileViews: false,
     showStreak: false,
     showTopLanguages: false,
@@ -214,7 +53,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
 
   const [customBadge, setCustomBadge] = useState<Badge>({
     id: "",
-    type: "custom",
+    type: "github",
     name: "",
     url: "",
     selected: false,
@@ -222,9 +61,9 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
 
   const [customStat, setCustomStat] = useState<Stat>({
     id: "",
-    type: "custom",
+    type: "github",
     name: "",
-    value: "",
+    url: "",
     selected: false,
   });
 
@@ -242,26 +81,44 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
   };
 
   const toggleBadge = (id: string) => {
-    handleDataChange({
-      badges: data.badges.map((badge) =>
-        badge.id === id ? { ...badge, selected: !badge.selected } : badge
-      ),
-    });
+    const updatedBadges = data.badges.map((badge) =>
+      badge.id === id ? { ...badge, selected: !badge.selected } : badge
+    );
+    handleDataChange({ badges: updatedBadges });
   };
 
   const toggleStat = (id: string) => {
-    handleDataChange({
-      stats: data.stats.map((stat) =>
-        stat.id === id ? { ...stat, selected: !stat.selected } : stat
-      ),
-    });
+    const updatedStats = data.statistics.map((stat) =>
+      stat.id === id ? { ...stat, selected: !stat.selected } : stat
+    );
+    handleDataChange({ statistics: updatedStats });
   };
 
   const toggleQuote = (id: string) => {
+    const updatedQuotes = data.quotes.map((quote) =>
+      quote.id === id ? { ...quote, selected: !quote.selected } : quote
+    );
+    handleDataChange({ quotes: updatedQuotes });
+  };
+
+  const toggleGitHubStats = () => {
     handleDataChange({
-      quotes: data.quotes.map((quote) =>
-        quote.id === id ? { ...quote, selected: !quote.selected } : quote
-      ),
+      githubStats: {
+        ...data.githubStats,
+        selected: !data.githubStats.selected,
+      },
+    });
+  };
+
+  const updateGitHubStats = (
+    field: keyof GitHubStats,
+    value: string | boolean
+  ) => {
+    handleDataChange({
+      githubStats: {
+        ...data.githubStats,
+        [field]: value,
+      },
     });
   };
 
@@ -291,7 +148,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
 
       setCustomBadge({
         id: "",
-        type: "custom",
+        type: "github",
         name: "",
         url: "",
         selected: false,
@@ -300,7 +157,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
   };
 
   const addCustomStat = () => {
-    if (customStat.name && customStat.value) {
+    if (customStat.name && customStat.url) {
       const newStat = {
         ...customStat,
         id: `custom-${Date.now()}`,
@@ -308,14 +165,14 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
       };
 
       handleDataChange({
-        stats: [...data.stats, newStat],
+        statistics: [...data.statistics, newStat],
       });
 
       setCustomStat({
         id: "",
-        type: "custom",
+        type: "github",
         name: "",
-        value: "",
+        url: "",
         selected: false,
       });
     }
@@ -350,7 +207,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
 
   const removeStat = (id: string) => {
     handleDataChange({
-      stats: data.stats.filter((stat) => stat.id !== id),
+      statistics: data.statistics.filter((stat) => stat.id !== id),
     });
   };
 
@@ -520,7 +377,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
                   )}
                 </button>
 
-                {badge.type === "custom" && (
+                {badge.id.startsWith("custom-") && (
                   <button
                     onClick={() => removeBadge(badge.id)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
@@ -571,7 +428,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
           <h3 className="text-xl font-bold mb-4 text-black">Statistics</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {data.stats.map((stat) => (
+            {data.statistics.map((stat) => (
               <div key={stat.id} className="relative group">
                 <button
                   onClick={() => toggleStat(stat.id)}
@@ -591,7 +448,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
                   )}
                 </button>
 
-                {stat.type === "custom" && (
+                {stat.id.startsWith("custom-") && (
                   <button
                     onClick={() => removeStat(stat.id)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
@@ -617,11 +474,11 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
               />
               <input
                 type="text"
-                value={customStat.value}
+                value={customStat.url}
                 onChange={(e) =>
-                  setCustomStat((prev) => ({ ...prev, value: e.target.value }))
+                  setCustomStat((prev) => ({ ...prev, url: e.target.value }))
                 }
-                placeholder="Stat Value (Markdown)"
+                placeholder="Stat URL"
                 className="p-2 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-400 text-black"
               />
             </div>
