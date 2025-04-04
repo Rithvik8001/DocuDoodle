@@ -118,18 +118,22 @@ export default function ReadmeSheet({
     }
 
     // Badges section
-    const selectedBadges = addOnsData.badges.filter((badge) => badge.selected);
-    if (selectedBadges.length > 0) {
-      content += `## Badges\n\n`;
-      content += `<p align="left">\n`;
-      selectedBadges.forEach((badge) => {
-        content += `<img src="${badge.url}" alt="${badge.name}" width="100" height="100"/>\n`;
-      });
-      content += `</p>\n\n`;
+    if (addOnsData?.badges) {
+      const selectedBadges = addOnsData.badges.filter(
+        (badge) => badge.selected
+      );
+      if (selectedBadges.length > 0) {
+        content += `## Badges\n\n`;
+        content += `<p align="left">\n`;
+        selectedBadges.forEach((badge) => {
+          content += `<img src="${badge.url}" alt="${badge.name}" width="100" height="100"/>\n`;
+        });
+        content += `</p>\n\n`;
+      }
     }
 
     // GitHub Stats section
-    if (addOnsData.githubStats.selected) {
+    if (addOnsData?.githubStats?.selected) {
       content += `## GitHub Stats\n\n`;
       content += `<p align="left">\n`;
       content += `<img src="https://github-readme-stats.vercel.app/api?username=${addOnsData.githubStats.username}&show_icons=true&theme=${addOnsData.githubStats.theme}" alt="GitHub Stats" />\n`;
@@ -137,26 +141,34 @@ export default function ReadmeSheet({
     }
 
     // Statistics section
-    const selectedStats = addOnsData.statistics.filter((stat) => stat.selected);
-    if (selectedStats.length > 0) {
-      content += `## Statistics\n\n`;
-      content += `<p align="left">\n`;
-      selectedStats.forEach((stat) => {
-        content += `<img src="${stat.url}" alt="${stat.name}" width="100" height="100"/>\n`;
-      });
-      content += `</p>\n\n`;
+    if (addOnsData?.statistics) {
+      const selectedStats = addOnsData.statistics.filter(
+        (stat) => stat.selected
+      );
+      if (selectedStats.length > 0) {
+        content += `## Statistics\n\n`;
+        content += `<p align="left">\n`;
+        selectedStats.forEach((stat) => {
+          content += `<img src="${stat.url}" alt="${stat.name}" width="100" height="100"/>\n`;
+        });
+        content += `</p>\n\n`;
+      }
     }
 
     // Quotes section
-    const selectedQuotes = addOnsData.quotes.filter((quote) => quote.selected);
-    if (selectedQuotes.length > 0) {
-      content += `## Quotes\n\n`;
-      selectedQuotes.forEach((quote) => {
-        content += `> ${quote.text}\n\n`;
-        if (quote.author) {
-          content += `> — ${quote.author}\n\n`;
-        }
-      });
+    if (addOnsData?.quotes) {
+      const selectedQuotes = addOnsData.quotes.filter(
+        (quote) => quote.selected
+      );
+      if (selectedQuotes.length > 0) {
+        content += `## Quotes\n\n`;
+        selectedQuotes.forEach((quote) => {
+          content += `> ${quote.text}\n\n`;
+          if (quote.author) {
+            content += `> — ${quote.author}\n\n`;
+          }
+        });
+      }
     }
 
     return content;

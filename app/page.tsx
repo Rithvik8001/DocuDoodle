@@ -10,7 +10,7 @@ import ReadmeSheet from "./components/ReadmeSheet";
 import { AboutSection as AboutSectionType } from "./types/about";
 import { SkillsSection as SkillsSectionType } from "./types/skills";
 import { SocialsSection as SocialsSectionType } from "./types/socials";
-import { AddOnsSection as AddOnsSectionType } from "./types/addons";
+import type { AddOnsSection as AddOnsSectionType } from "./types/addons";
 
 export default function Home() {
   const [isReadmeSheetOpen, setIsReadmeSheetOpen] = useState(false);
@@ -37,8 +37,13 @@ export default function Home() {
   });
   const [addOnsData, setAddOnsData] = useState<AddOnsSectionType>({
     badges: [],
-    stats: [],
+    statistics: [],
     quotes: [],
+    githubStats: {
+      selected: false,
+      username: "",
+      theme: "dark",
+    },
     showProfileViews: false,
     showStreak: false,
     showTopLanguages: false,

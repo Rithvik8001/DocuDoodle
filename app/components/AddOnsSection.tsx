@@ -1,13 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  AddOnsSection as AddOnsSectionType,
-  Badge,
-  Stat,
-  Quote,
-  GitHubStats,
-} from "../types/addons";
+import { Badge, Stat, Quote, GitHubStats } from "../types/addons";
+import type { AddOnsSection } from "../types/addons";
 import {
   Check,
   X,
@@ -32,11 +27,11 @@ import {
 import { initialBadges, initialStats, initialQuotes } from "../data/addons";
 
 interface AddOnsSectionProps {
-  onDataChange: (data: AddOnsSectionType) => void;
+  onDataChange: (data: AddOnsSection) => void;
 }
 
 export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
-  const [data, setData] = useState<AddOnsSectionType>({
+  const [data, setData] = useState<AddOnsSection>({
     badges: initialBadges,
     statistics: initialStats,
     quotes: initialQuotes,
@@ -74,7 +69,7 @@ export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
     selected: false,
   });
 
-  const handleDataChange = (newData: Partial<AddOnsSectionType>) => {
+  const handleDataChange = (newData: Partial<AddOnsSection>) => {
     const updatedData = { ...data, ...newData };
     setData(updatedData);
     onDataChange(updatedData);
