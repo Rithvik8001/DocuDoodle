@@ -5,6 +5,7 @@ import {
   SkillsSection as SkillsSectionType,
   SkillCategory,
   Skill,
+  SkillsSectionProps,
 } from "../types/skills";
 import { Check, X } from "lucide-react";
 
@@ -95,7 +96,7 @@ const initialCategories: SkillCategory[] = [
   },
 ];
 
-export default function SkillsSection() {
+export default function SkillsSection({ onDataChange }: SkillsSectionProps) {
   const [skillsData, setSkillsData] = useState<SkillsSectionType>({
     categories: initialCategories,
   });
@@ -175,6 +176,12 @@ export default function SkillsSection() {
 
       return { categories: newCategories };
     });
+  };
+
+  const handleDataChange = (newData: Partial<SkillsSectionType>) => {
+    const updatedData = { ...skillsData, ...newData };
+    setSkillsData(updatedData);
+    onDataChange(updatedData);
   };
 
   return (

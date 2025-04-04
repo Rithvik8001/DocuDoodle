@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { SocialsSection as SocialsSectionType, Social } from "../types/socials";
+import {
+  SocialsSection as SocialsSectionType,
+  Social,
+  SocialsSectionProps,
+} from "../types/socials";
 import {
   Check,
   X,
@@ -125,8 +129,8 @@ const initialSocials: Social[] = [
   },
 ];
 
-export default function SocialsSection() {
-  const [socialsData, setSocialsData] = useState<SocialsSectionType>({
+export default function SocialsSection({ onDataChange }: SocialsSectionProps) {
+  const [data, setData] = useState<SocialsSectionType>({
     socials: initialSocials,
   });
 
@@ -139,8 +143,14 @@ export default function SocialsSection() {
     selected: false,
   });
 
+  const handleDataChange = (newData: Partial<SocialsSectionType>) => {
+    const updatedData = { ...data, ...newData };
+    setData(updatedData);
+    onDataChange(updatedData);
+  };
+
   const toggleSocial = (id: string) => {
-    setSocialsData((prev) => ({
+    setData((prev) => ({
       ...prev,
       socials: prev.socials.map((social) =>
         social.id === id ? { ...social, selected: !social.selected } : social
@@ -149,7 +159,7 @@ export default function SocialsSection() {
   };
 
   const updateSocialUsername = (id: string, username: string) => {
-    setSocialsData((prev) => ({
+    setData((prev) => ({
       ...prev,
       socials: prev.socials.map((social) => {
         if (social.id === id) {
@@ -169,7 +179,7 @@ export default function SocialsSection() {
         selected: true,
       };
 
-      setSocialsData((prev) => ({
+      setData((prev) => ({
         ...prev,
         socials: [...prev.socials, newSocial],
       }));
@@ -186,7 +196,7 @@ export default function SocialsSection() {
   };
 
   const removeSocial = (id: string) => {
-    setSocialsData((prev) => ({
+    setData((prev) => ({
       ...prev,
       socials: prev.socials.filter((social) => social.id !== id),
     }));
@@ -248,7 +258,7 @@ export default function SocialsSection() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {socialsData.socials
+            {data.socials
               .filter((social) =>
                 [
                   "twitter",
@@ -335,7 +345,7 @@ export default function SocialsSection() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {socialsData.socials
+            {data.socials
               .filter((social) =>
                 ["website", "email", "phone", "location"].includes(social.id)
               )

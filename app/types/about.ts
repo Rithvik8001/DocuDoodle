@@ -1,18 +1,15 @@
+export interface Project {
+  name: string;
+  link: string;
+}
+
 export interface AboutSection {
   title: string;
   subtitle: string;
-  work: {
-    projectName: string;
-    projectLink: string;
-  }[];
-  collaboration: {
-    projectName: string;
-    projectLink: string;
-  }[];
-  help: {
-    projectName: string;
-    projectLink: string;
-  }[];
+  about: string;
+  workProjects: Project[];
+  collaborationProjects: Project[];
+  helpProjects: Project[];
   learning: string;
   expertise: string[];
   contact: string;
@@ -20,4 +17,8 @@ export interface AboutSection {
   blog: string;
   resume: string;
   funFact: string;
+}
+
+export interface AboutSectionProps {
+  onDataChange: (data: AboutSection) => void;
 }

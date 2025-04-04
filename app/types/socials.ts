@@ -10,3 +10,7 @@ export interface Social {
 export interface SocialsSection {
   socials: Social[];
 }
+
+export interface SocialsSectionProps {
+  onDataChange: (data: SocialsSection) => void;
+}

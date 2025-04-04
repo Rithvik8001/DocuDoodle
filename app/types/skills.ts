@@ -11,3 +11,7 @@ export interface SkillCategory {
 export interface SkillsSection {
   categories: SkillCategory[];
 }
+
+export interface SkillsSectionProps {
+  onDataChange: (data: SkillsSection) => void;
+}

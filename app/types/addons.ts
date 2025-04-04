@@ -30,3 +30,7 @@ export interface AddOnsSection {
   showTopLanguages: boolean;
   showContributions: boolean;
 }
+
+export interface AddOnsSectionProps {
+  onDataChange: (data: AddOnsSection) => void;
+}

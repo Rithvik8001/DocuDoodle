@@ -6,6 +6,7 @@ import {
   Badge,
   Stat,
   Quote,
+  AddOnsSectionProps,
 } from "../types/addons";
 import {
   Check,
@@ -200,8 +201,8 @@ const initialQuotes: Quote[] = [
   },
 ];
 
-export default function AddOnsSection() {
-  const [addOnsData, setAddOnsData] = useState<AddOnsSectionType>({
+export default function AddOnsSection({ onDataChange }: AddOnsSectionProps) {
+  const [data, setData] = useState<AddOnsSectionType>({
     badges: initialBadges,
     stats: initialStats,
     quotes: initialQuotes,
@@ -234,31 +235,34 @@ export default function AddOnsSection() {
     selected: false,
   });
 
+  const handleDataChange = (newData: Partial<AddOnsSectionType>) => {
+    const updatedData = { ...data, ...newData };
+    setData(updatedData);
+    onDataChange(updatedData);
+  };
+
   const toggleBadge = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      badges: prev.badges.map((badge) =>
+    handleDataChange({
+      badges: data.badges.map((badge) =>
         badge.id === id ? { ...badge, selected: !badge.selected } : badge
       ),
-    }));
+    });
   };
 
   const toggleStat = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      stats: prev.stats.map((stat) =>
+    handleDataChange({
+      stats: data.stats.map((stat) =>
         stat.id === id ? { ...stat, selected: !stat.selected } : stat
       ),
-    }));
+    });
   };
 
   const toggleQuote = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      quotes: prev.quotes.map((quote) =>
+    handleDataChange({
+      quotes: data.quotes.map((quote) =>
         quote.id === id ? { ...quote, selected: !quote.selected } : quote
       ),
-    }));
+    });
   };
 
   const toggleFeature = (
@@ -268,10 +272,9 @@ export default function AddOnsSection() {
       | "showTopLanguages"
       | "showContributions"
   ) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      [feature]: !prev[feature],
-    }));
+    handleDataChange({
+      [feature]: !data[feature],
+    });
   };
 
   const addCustomBadge = () => {
@@ -282,10 +285,9 @@ export default function AddOnsSection() {
         selected: true,
       };
 
-      setAddOnsData((prev) => ({
-        ...prev,
-        badges: [...prev.badges, newBadge],
-      }));
+      handleDataChange({
+        badges: [...data.badges, newBadge],
+      });
 
       setCustomBadge({
         id: "",
@@ -305,10 +307,9 @@ export default function AddOnsSection() {
         selected: true,
       };
 
-      setAddOnsData((prev) => ({
-        ...prev,
-        stats: [...prev.stats, newStat],
-      }));
+      handleDataChange({
+        stats: [...data.stats, newStat],
+      });
 
       setCustomStat({
         id: "",
@@ -328,10 +329,9 @@ export default function AddOnsSection() {
         selected: true,
       };
 
-      setAddOnsData((prev) => ({
-        ...prev,
-        quotes: [...prev.quotes, newQuote],
-      }));
+      handleDataChange({
+        quotes: [...data.quotes, newQuote],
+      });
 
       setCustomQuote({
         id: "",
@@ -343,24 +343,21 @@ export default function AddOnsSection() {
   };
 
   const removeBadge = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      badges: prev.badges.filter((badge) => badge.id !== id),
-    }));
+    handleDataChange({
+      badges: data.badges.filter((badge) => badge.id !== id),
+    });
   };
 
   const removeStat = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      stats: prev.stats.filter((stat) => stat.id !== id),
-    }));
+    handleDataChange({
+      stats: data.stats.filter((stat) => stat.id !== id),
+    });
   };
 
   const removeQuote = (id: string) => {
-    setAddOnsData((prev) => ({
-      ...prev,
-      quotes: prev.quotes.filter((quote) => quote.id !== id),
-    }));
+    handleDataChange({
+      quotes: data.quotes.filter((quote) => quote.id !== id),
+    });
   };
 
   const getBadgeIcon = (type: string) => {
@@ -411,7 +408,7 @@ export default function AddOnsSection() {
             <button
               onClick={() => toggleFeature("showProfileViews")}
               className={`p-3 border-2 border-black rounded-lg text-base transition-all duration-200 flex items-center gap-3 ${
-                addOnsData.showProfileViews
+                data.showProfileViews
                   ? "bg-green-400 text-black shadow-[2px_2px_0_#000]"
                   : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
               } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
@@ -419,11 +416,11 @@ export default function AddOnsSection() {
               <Eye
                 size={20}
                 className={
-                  addOnsData.showProfileViews ? "text-black" : "text-gray-600"
+                  data.showProfileViews ? "text-black" : "text-gray-600"
                 }
               />
               <span>Profile Views Counter</span>
-              {addOnsData.showProfileViews ? (
+              {data.showProfileViews ? (
                 <Check size={16} className="ml-auto text-black" />
               ) : (
                 <div className="w-4 h-4 border-2 border-black rounded-sm ml-auto"></div>
@@ -433,19 +430,17 @@ export default function AddOnsSection() {
             <button
               onClick={() => toggleFeature("showStreak")}
               className={`p-3 border-2 border-black rounded-lg text-base transition-all duration-200 flex items-center gap-3 ${
-                addOnsData.showStreak
+                data.showStreak
                   ? "bg-green-400 text-black shadow-[2px_2px_0_#000]"
                   : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
               } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
             >
               <Flame
                 size={20}
-                className={
-                  addOnsData.showStreak ? "text-black" : "text-gray-600"
-                }
+                className={data.showStreak ? "text-black" : "text-gray-600"}
               />
               <span>GitHub Streak</span>
-              {addOnsData.showStreak ? (
+              {data.showStreak ? (
                 <Check size={16} className="ml-auto text-black" />
               ) : (
                 <div className="w-4 h-4 border-2 border-black rounded-sm ml-auto"></div>
@@ -455,7 +450,7 @@ export default function AddOnsSection() {
             <button
               onClick={() => toggleFeature("showTopLanguages")}
               className={`p-3 border-2 border-black rounded-lg text-base transition-all duration-200 flex items-center gap-3 ${
-                addOnsData.showTopLanguages
+                data.showTopLanguages
                   ? "bg-green-400 text-black shadow-[2px_2px_0_#000]"
                   : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
               } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
@@ -463,11 +458,11 @@ export default function AddOnsSection() {
               <Languages
                 size={20}
                 className={
-                  addOnsData.showTopLanguages ? "text-black" : "text-gray-600"
+                  data.showTopLanguages ? "text-black" : "text-gray-600"
                 }
               />
               <span>Top Languages</span>
-              {addOnsData.showTopLanguages ? (
+              {data.showTopLanguages ? (
                 <Check size={16} className="ml-auto text-black" />
               ) : (
                 <div className="w-4 h-4 border-2 border-black rounded-sm ml-auto"></div>
@@ -477,7 +472,7 @@ export default function AddOnsSection() {
             <button
               onClick={() => toggleFeature("showContributions")}
               className={`p-3 border-2 border-black rounded-lg text-base transition-all duration-200 flex items-center gap-3 ${
-                addOnsData.showContributions
+                data.showContributions
                   ? "bg-green-400 text-black shadow-[2px_2px_0_#000]"
                   : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
               } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
@@ -485,11 +480,11 @@ export default function AddOnsSection() {
               <GitBranch
                 size={20}
                 className={
-                  addOnsData.showContributions ? "text-black" : "text-gray-600"
+                  data.showContributions ? "text-black" : "text-gray-600"
                 }
               />
               <span>Contribution Graph</span>
-              {addOnsData.showContributions ? (
+              {data.showContributions ? (
                 <Check size={16} className="ml-auto text-black" />
               ) : (
                 <div className="w-4 h-4 border-2 border-black rounded-sm ml-auto"></div>
@@ -505,7 +500,7 @@ export default function AddOnsSection() {
           <h3 className="text-xl font-bold mb-4 text-black">Badges</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {addOnsData.badges.map((badge) => (
+            {data.badges.map((badge) => (
               <div key={badge.id} className="relative group">
                 <button
                   onClick={() => toggleBadge(badge.id)}
@@ -576,7 +571,7 @@ export default function AddOnsSection() {
           <h3 className="text-xl font-bold mb-4 text-black">Statistics</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {addOnsData.stats.map((stat) => (
+            {data.stats.map((stat) => (
               <div key={stat.id} className="relative group">
                 <button
                   onClick={() => toggleStat(stat.id)}
@@ -647,7 +642,7 @@ export default function AddOnsSection() {
           <h3 className="text-xl font-bold mb-4 text-black">Quotes</h3>
 
           <div className="grid grid-cols-1 gap-4 mb-6">
-            {addOnsData.quotes.map((quote) => (
+            {data.quotes.map((quote) => (
               <div key={quote.id} className="relative group">
                 <button
                   onClick={() => toggleQuote(quote.id)}

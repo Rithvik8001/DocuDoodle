@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { AboutSection as AboutSectionType } from "../types/about";
+import {
+  AboutSection as AboutSectionType,
+  AboutSectionProps,
+  Project,
+} from "../types/about";
 import {
   Github,
   Mail,
@@ -12,15 +16,16 @@ import {
   Trash2,
 } from "lucide-react";
 
-export default function AboutSection() {
-  const [aboutData, setAboutData] = useState<AboutSectionType>({
+export default function AboutSection({ onDataChange }: AboutSectionProps) {
+  const [data, setData] = useState<AboutSectionType>({
     title: "",
     subtitle: "",
-    work: [{ projectName: "", projectLink: "" }],
-    collaboration: [{ projectName: "", projectLink: "" }],
-    help: [{ projectName: "", projectLink: "" }],
+    about: "",
+    workProjects: [],
+    collaborationProjects: [],
+    helpProjects: [],
     learning: "",
-    expertise: [""],
+    expertise: [],
     contact: "",
     portfolio: "",
     blog: "",
@@ -32,47 +37,55 @@ export default function AboutSection() {
     work: "🔭 Work",
     collaboration: "👯 Collaboration",
     help: "🤝 Looking for Help",
-    learning: "🌱 Currently Learning",
-    expertise: "💬 Expertise",
+    learning: "🌱 Learning",
+    expertise: "💡 Expertise",
     contact: "📫 Contact",
-    portfolio: "👨‍💻 Portfolio",
+    portfolio: "🌐 Portfolio",
     blog: "📝 Blog",
     resume: "📄 Resume",
-    funFact: "⚡ Fun Fact",
+    funFact: "🎯 Fun Fact",
   });
 
-  const handleInputChange = (field: keyof AboutSectionType, value: any) => {
-    setAboutData((prev) => ({ ...prev, [field]: value }));
+  const handleDataChange = (newData: Partial<AboutSectionType>) => {
+    const updatedData = { ...data, ...newData };
+    setData(updatedData);
+    onDataChange(updatedData);
   };
 
-  const handleHeadingChange = (section: string, value: string) => {
+  const handleHeadingChange = (
+    section: keyof typeof sectionHeadings,
+    value: string
+  ) => {
     setSectionHeadings((prev) => ({ ...prev, [section]: value }));
   };
 
-  const addProject = (field: "work" | "collaboration" | "help") => {
-    setAboutData((prev) => ({
+  const addProject = (
+    field: "workProjects" | "collaborationProjects" | "helpProjects"
+  ) => {
+    const newProject: Project = { name: "", link: "" };
+    setData((prev) => ({
       ...prev,
-      [field]: [...prev[field], { projectName: "", projectLink: "" }],
+      [field]: [...prev[field], newProject],
     }));
   };
 
   const removeProject = (
-    field: "work" | "collaboration" | "help",
+    field: "workProjects" | "collaborationProjects" | "helpProjects",
     index: number
   ) => {
-    setAboutData((prev) => ({
+    setData((prev) => ({
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index),
     }));
   };
 
   const updateProject = (
-    field: "work" | "collaboration" | "help",
+    field: "workProjects" | "collaborationProjects" | "helpProjects",
     index: number,
-    key: "projectName" | "projectLink",
+    key: keyof Project,
     value: string
   ) => {
-    setAboutData((prev) => ({
+    setData((prev) => ({
       ...prev,
       [field]: prev[field].map((item, i) =>
         i === index ? { ...item, [key]: value } : item
@@ -92,8 +105,8 @@ export default function AboutSection() {
           </label>
           <input
             type="text"
-            value={aboutData.title}
-            onChange={(e) => handleInputChange("title", e.target.value)}
+            value={data.title}
+            onChange={(e) => handleDataChange({ title: e.target.value })}
             placeholder="Hi 👋, I'm [Your Name]"
             className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black"
             required
@@ -106,8 +119,8 @@ export default function AboutSection() {
           </label>
           <input
             type="text"
-            value={aboutData.subtitle}
-            onChange={(e) => handleInputChange("subtitle", e.target.value)}
+            value={data.subtitle}
+            onChange={(e) => handleDataChange({ subtitle: e.target.value })}
             placeholder="Junior IOS Engineer | Frontend Enthusiast"
             className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black"
             required
@@ -123,16 +136,16 @@ export default function AboutSection() {
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
             placeholder="🔭 Work"
           />
-          {aboutData.work.map((project, index) => (
+          {data.workProjects.map((project, index) => (
             <div
               key={index}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 relative group"
             >
               <input
                 type="text"
-                value={project.projectName}
+                value={project.name}
                 onChange={(e) =>
-                  updateProject("work", index, "projectName", e.target.value)
+                  updateProject("workProjects", index, "name", e.target.value)
                 }
                 placeholder="Project Name (e.g., My Awesome App)"
                 className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black"
@@ -140,16 +153,16 @@ export default function AboutSection() {
               <div className="relative">
                 <input
                   type="text"
-                  value={project.projectLink}
+                  value={project.link}
                   onChange={(e) =>
-                    updateProject("work", index, "projectLink", e.target.value)
+                    updateProject("workProjects", index, "link", e.target.value)
                   }
                   placeholder="Project Link (e.g., https://github.com/username/project)"
                   className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
                 />
-                {aboutData.work.length > 1 && (
+                {data.workProjects.length > 1 && (
                   <button
-                    onClick={() => removeProject("work", index)}
+                    onClick={() => removeProject("workProjects", index)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
@@ -159,7 +172,7 @@ export default function AboutSection() {
             </div>
           ))}
           <button
-            onClick={() => addProject("work")}
+            onClick={() => addProject("workProjects")}
             className="bg-red-400 text-black border-2 border-black py-3 px-6 rounded-lg font-semibold cursor-pointer shadow-[4px_4px_0_#000] transition-all duration-200 uppercase tracking-wide hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_#000] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_#000] flex items-center justify-center gap-2"
           >
             <Plus size={18} />
@@ -178,19 +191,19 @@ export default function AboutSection() {
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
             placeholder="👯 Collaboration"
           />
-          {aboutData.collaboration.map((project, index) => (
+          {data.collaborationProjects.map((project, index) => (
             <div
               key={index}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 relative group"
             >
               <input
                 type="text"
-                value={project.projectName}
+                value={project.name}
                 onChange={(e) =>
                   updateProject(
-                    "collaboration",
+                    "collaborationProjects",
                     index,
-                    "projectName",
+                    "name",
                     e.target.value
                   )
                 }
@@ -200,21 +213,23 @@ export default function AboutSection() {
               <div className="relative">
                 <input
                   type="text"
-                  value={project.projectLink}
+                  value={project.link}
                   onChange={(e) =>
                     updateProject(
-                      "collaboration",
+                      "collaborationProjects",
                       index,
-                      "projectLink",
+                      "link",
                       e.target.value
                     )
                   }
                   placeholder="Project Link (e.g., https://github.com/username/project)"
                   className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
                 />
-                {aboutData.collaboration.length > 1 && (
+                {data.collaborationProjects.length > 1 && (
                   <button
-                    onClick={() => removeProject("collaboration", index)}
+                    onClick={() =>
+                      removeProject("collaborationProjects", index)
+                    }
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
@@ -224,7 +239,7 @@ export default function AboutSection() {
             </div>
           ))}
           <button
-            onClick={() => addProject("collaboration")}
+            onClick={() => addProject("collaborationProjects")}
             className="bg-red-400 text-black border-2 border-black py-3 px-6 rounded-lg font-semibold cursor-pointer shadow-[4px_4px_0_#000] transition-all duration-200 uppercase tracking-wide hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_#000] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_#000] flex items-center justify-center gap-2"
           >
             <Plus size={18} />
@@ -241,16 +256,16 @@ export default function AboutSection() {
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
             placeholder="🤝 Looking for Help"
           />
-          {aboutData.help.map((project, index) => (
+          {data.helpProjects.map((project, index) => (
             <div
               key={index}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 relative group"
             >
               <input
                 type="text"
-                value={project.projectName}
+                value={project.name}
                 onChange={(e) =>
-                  updateProject("help", index, "projectName", e.target.value)
+                  updateProject("helpProjects", index, "name", e.target.value)
                 }
                 placeholder="Project Name (e.g., Mobile App Development)"
                 className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] placeholder:text-gray-400 text-black"
@@ -258,16 +273,16 @@ export default function AboutSection() {
               <div className="relative">
                 <input
                   type="text"
-                  value={project.projectLink}
+                  value={project.link}
                   onChange={(e) =>
-                    updateProject("help", index, "projectLink", e.target.value)
+                    updateProject("helpProjects", index, "link", e.target.value)
                   }
                   placeholder="Project Link (e.g., https://github.com/username/project)"
                   className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
                 />
-                {aboutData.help.length > 1 && (
+                {data.helpProjects.length > 1 && (
                   <button
-                    onClick={() => removeProject("help", index)}
+                    onClick={() => removeProject("helpProjects", index)}
                     className="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 border-2 border-black shadow-[2px_2px_0_#000] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] transition-all duration-200"
                   >
                     <Trash2 size={16} />
@@ -277,7 +292,7 @@ export default function AboutSection() {
             </div>
           ))}
           <button
-            onClick={() => addProject("help")}
+            onClick={() => addProject("helpProjects")}
             className="bg-red-400 text-black border-2 border-black py-3 px-6 rounded-lg font-semibold cursor-pointer shadow-[4px_4px_0_#000] transition-all duration-200 uppercase tracking-wide hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_#000] active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0_#000] flex items-center justify-center gap-2"
           >
             <Plus size={18} />
@@ -292,12 +307,12 @@ export default function AboutSection() {
             value={sectionHeadings.learning}
             onChange={(e) => handleHeadingChange("learning", e.target.value)}
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
-            placeholder="🌱 Currently Learning"
+            placeholder="🌱 Learning"
           />
           <input
             type="text"
-            value={aboutData.learning}
-            onChange={(e) => handleInputChange("learning", e.target.value)}
+            value={data.learning}
+            onChange={(e) => handleDataChange({ learning: e.target.value })}
             placeholder="I am currently diving deep into iOS Development, SwiftUI, and React Native"
             className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
           />
@@ -310,16 +325,15 @@ export default function AboutSection() {
             value={sectionHeadings.expertise}
             onChange={(e) => handleHeadingChange("expertise", e.target.value)}
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
-            placeholder="💬 Expertise"
+            placeholder="💡 Expertise"
           />
           <input
             type="text"
-            value={aboutData.expertise.join(", ")}
+            value={data.expertise.join(", ")}
             onChange={(e) =>
-              handleInputChange(
-                "expertise",
-                e.target.value.split(",").map((item) => item.trim())
-              )
+              handleDataChange({
+                expertise: e.target.value.split(",").map((item) => item.trim()),
+              })
             }
             placeholder="React, Javascript, Swift, SwiftUI, Node.js, TypeScript"
             className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
@@ -339,8 +353,8 @@ export default function AboutSection() {
             <Mail size={20} className="absolute left-4 text-gray-600" />
             <input
               type="email"
-              value={aboutData.contact}
-              onChange={(e) => handleInputChange("contact", e.target.value)}
+              value={data.contact}
+              onChange={(e) => handleDataChange({ contact: e.target.value })}
               placeholder="your.email@example.com"
               className="p-3 pl-12 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
             />
@@ -354,14 +368,14 @@ export default function AboutSection() {
             value={sectionHeadings.portfolio}
             onChange={(e) => handleHeadingChange("portfolio", e.target.value)}
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
-            placeholder="👨‍💻 Portfolio"
+            placeholder="🌐 Portfolio"
           />
           <div className="relative flex items-center">
             <Globe size={20} className="absolute left-4 text-gray-600" />
             <input
               type="url"
-              value={aboutData.portfolio}
-              onChange={(e) => handleInputChange("portfolio", e.target.value)}
+              value={data.portfolio}
+              onChange={(e) => handleDataChange({ portfolio: e.target.value })}
               placeholder="https://your-portfolio.com"
               className="p-3 pl-12 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
             />
@@ -375,12 +389,12 @@ export default function AboutSection() {
             value={sectionHeadings.blog}
             onChange={(e) => handleHeadingChange("blog", e.target.value)}
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
-            placeholder="�� Blog"
+            placeholder="📝 Blog"
           />
           <input
             type="url"
-            value={aboutData.blog}
-            onChange={(e) => handleInputChange("blog", e.target.value)}
+            value={data.blog}
+            onChange={(e) => handleDataChange({ blog: e.target.value })}
             placeholder="https://your-blog.com or https://medium.com/@yourusername"
             className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
           />
@@ -399,8 +413,8 @@ export default function AboutSection() {
             <FileText size={20} className="absolute left-4 text-gray-600" />
             <input
               type="url"
-              value={aboutData.resume}
-              onChange={(e) => handleInputChange("resume", e.target.value)}
+              value={data.resume}
+              onChange={(e) => handleDataChange({ resume: e.target.value })}
               placeholder="https://your-resume.com or link to your LinkedIn profile"
               className="p-3 pl-12 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
             />
@@ -414,14 +428,14 @@ export default function AboutSection() {
             value={sectionHeadings.funFact}
             onChange={(e) => handleHeadingChange("funFact", e.target.value)}
             className="text-xl font-bold mb-4 text-black bg-transparent border-b-2 border-dashed border-gray-300 focus:outline-none focus:border-black w-full"
-            placeholder="⚡ Fun Fact"
+            placeholder="🎯 Fun Fact"
           />
           <div className="relative flex items-center">
             <Lightbulb size={20} className="absolute left-4 text-gray-600" />
             <input
               type="text"
-              value={aboutData.funFact}
-              onChange={(e) => handleInputChange("funFact", e.target.value)}
+              value={data.funFact}
+              onChange={(e) => handleDataChange({ funFact: e.target.value })}
               placeholder="Share something interesting about yourself (e.g., I can solve a Rubik's cube in under 30 seconds)"
               className="p-3 pl-12 border-2 border-black rounded-lg text-base bg-white shadow-[4px_4px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-2px] focus:translate-y-[-2px] focus:shadow-[6px_6px_0_#000] w-full placeholder:text-gray-400 text-black"
             />
