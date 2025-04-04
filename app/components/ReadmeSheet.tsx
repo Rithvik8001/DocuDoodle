@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Copy, Download, Check } from "lucide-react";
-import { AboutSection as AboutSectionType } from "../types/about";
-import { SkillsSection as SkillsSectionType } from "../types/skills";
-import { SocialsSection as SocialsSectionType } from "../types/socials";
-import { AddOnsSection as AddOnsSectionType } from "../types/addons";
+import { useState } from "react";
+import { X, Copy, Download } from "lucide-react";
+import { AboutSection } from "../types/about";
+import { SkillsSection } from "../types/skills";
+import { SocialsSection } from "../types/socials";
+import { AddOnsSection } from "../types/addons";
 
 interface ReadmeSheetProps {
   isOpen: boolean;
   onClose: () => void;
-  aboutData: AboutSectionType;
-  skillsData: SkillsSectionType;
-  socialsData: SocialsSectionType;
-  addOnsData: AddOnsSectionType;
+  aboutData: AboutSection;
+  skillsData: SkillsSection;
+  socialsData: SocialsSection;
+  addOnsData: AddOnsSection;
 }
 
 export default function ReadmeSheet({
@@ -25,144 +25,139 @@ export default function ReadmeSheet({
   addOnsData,
 }: ReadmeSheetProps) {
   const [copied, setCopied] = useState(false);
-  const [readmeContent, setReadmeContent] = useState("");
-
-  useEffect(() => {
-    if (isOpen) {
-      generateReadme();
-    }
-  }, [isOpen, aboutData, skillsData, socialsData, addOnsData]);
 
   const generateReadme = () => {
-    let content = "";
+    let readme = "";
 
-    // Add title and subtitle
-    content += `# ${aboutData.title}\n\n`;
-    content += `${aboutData.subtitle}\n\n`;
+    // Title and subtitle with HTML alignment
+    if (aboutData.title) {
+      readme += `<h1 align="center">${aboutData.title}</h1>\n\n`;
+    }
+    if (aboutData.subtitle) {
+      readme += `<h3 align="center">${aboutData.subtitle}</h3>\n\n`;
+    }
 
-    // Add about section
-    content += `## About Me\n\n`;
-    content += `${aboutData.about}\n\n`;
+    // About section
+    if (aboutData.about) {
+      readme += `## About Me\n\n${aboutData.about}\n\n`;
+    }
 
-    // Add work projects
+    // Work projects
     if (aboutData.workProjects.length > 0) {
-      content += `## Work Projects\n\n`;
+      readme += `## Work Projects\n\n`;
       aboutData.workProjects.forEach((project) => {
-        content += `- [${project.name}](${project.link})\n`;
+        readme += `- [${project.name}](${project.link})\n`;
       });
-      content += "\n";
+      readme += "\n";
     }
 
-    // Add collaboration projects
+    // Collaboration projects
     if (aboutData.collaborationProjects.length > 0) {
-      content += `## Collaboration Projects\n\n`;
+      readme += `## Collaboration Projects\n\n`;
       aboutData.collaborationProjects.forEach((project) => {
-        content += `- [${project.name}](${project.link})\n`;
+        readme += `- [${project.name}](${project.link})\n`;
       });
-      content += "\n";
+      readme += "\n";
     }
 
-    // Add help projects
+    // Help projects
     if (aboutData.helpProjects.length > 0) {
-      content += `## Projects I've Helped With\n\n`;
+      readme += `## Help Projects\n\n`;
       aboutData.helpProjects.forEach((project) => {
-        content += `- [${project.name}](${project.link})\n`;
+        readme += `- [${project.name}](${project.link})\n`;
       });
-      content += "\n";
+      readme += "\n";
     }
 
-    // Add skills
-    if (
-      skillsData.categories.some((category) =>
-        category.skills.some((skill) => skill.selected)
-      )
-    ) {
-      content += `## Skills\n\n`;
+    // Skills section
+    if (skillsData.categories.length > 0) {
+      readme += `## Skills\n\n`;
       skillsData.categories.forEach((category) => {
-        const selectedSkills = category.skills.filter(
-          (skill) => skill.selected
-        );
-        if (selectedSkills.length > 0) {
-          content += `### ${category.name}\n\n`;
-          selectedSkills.forEach((skill) => {
-            content += `- ${skill.name}\n`;
-          });
-          content += "\n";
+        if (category.skills.some((skill) => skill.selected)) {
+          readme += `### ${category.name}\n\n`;
+          category.skills
+            .filter((skill) => skill.selected)
+            .forEach((skill) => {
+              readme += `- ${skill.name}\n`;
+            });
+          readme += "\n";
         }
       });
     }
 
-    // Add socials
-    const selectedSocials = socialsData.socials.filter(
-      (social) => social.selected
-    );
-    if (selectedSocials.length > 0) {
-      content += `## Connect With Me\n\n`;
-      selectedSocials.forEach((social) => {
-        if (social.username) {
-          content += `- [${social.platform}](${social.url})\n`;
-        }
-      });
-      content += "\n";
+    // Socials section
+    if (socialsData.socials.length > 0) {
+      readme += `## Connect With Me\n\n`;
+      socialsData.socials
+        .filter((social) => social.selected)
+        .forEach((social) => {
+          readme += `- [${social.platform}](${social.url})\n`;
+        });
+      readme += "\n";
     }
 
-    // Add badges
-    const selectedBadges = addOnsData.badges.filter((badge) => badge.selected);
-    if (selectedBadges.length > 0) {
-      content += `## Badges\n\n`;
-      selectedBadges.forEach((badge) => {
-        content += `![${badge.name}](${badge.url})\n`;
-      });
-      content += "\n";
+    // Badges
+    if (addOnsData.badges.length > 0) {
+      readme += `## Badges\n\n`;
+      addOnsData.badges
+        .filter((badge) => badge.selected)
+        .forEach((badge) => {
+          readme += `![${badge.name}](${badge.url})\n`;
+        });
+      readme += "\n";
     }
 
-    // Add GitHub stats
+    // GitHub stats
     if (addOnsData.showProfileViews) {
-      content += `![Profile Views](https://komarev.com/ghpvc/?username=yourusername&color=blueviolet)\n\n`;
+      readme += `![Profile Views](https://komarev.com/ghpvc/?username=YOUR_USERNAME&style=flat-square)\n\n`;
     }
 
     if (addOnsData.showStreak) {
-      content += `![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=yourusername&theme=radical)\n\n`;
+      readme += `![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=dark)\n\n`;
     }
 
     if (addOnsData.showTopLanguages) {
-      content += `![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=yourusername&layout=compact&theme=radical)\n\n`;
+      readme += `![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=YOUR_USERNAME&layout=compact&theme=dark)\n\n`;
     }
 
     if (addOnsData.showContributions) {
-      content += `![Contributions](https://github-readme-activity-graph.vercel.app/graph?username=yourusername&theme=radical)\n\n`;
+      readme += `![GitHub Activity Graph](https://activity-graph.herokuapp.com/graph?username=YOUR_USERNAME&theme=github)\n\n`;
     }
 
-    // Add stats
-    const selectedStats = addOnsData.stats.filter((stat) => stat.selected);
-    if (selectedStats.length > 0) {
-      content += `## Statistics\n\n`;
-      selectedStats.forEach((stat) => {
-        content += `- ${stat.name}: ${stat.value}\n`;
-      });
-      content += "\n";
+    // Statistics
+    if (addOnsData.stats.length > 0) {
+      readme += `## Statistics\n\n`;
+      addOnsData.stats
+        .filter((stat) => stat.selected)
+        .forEach((stat) => {
+          readme += `${stat.value}\n`;
+        });
+      readme += "\n";
     }
 
-    // Add quotes
-    const selectedQuotes = addOnsData.quotes.filter((quote) => quote.selected);
-    if (selectedQuotes.length > 0) {
-      content += `## Quotes\n\n`;
-      selectedQuotes.forEach((quote) => {
-        content += `> "${quote.text}" - ${quote.author}\n\n`;
-      });
+    // Quotes
+    if (addOnsData.quotes.length > 0) {
+      readme += `## Quotes\n\n`;
+      addOnsData.quotes
+        .filter((quote) => quote.selected)
+        .forEach((quote) => {
+          readme += `> "${quote.text}"\n> > — ${quote.author}\n\n`;
+        });
     }
 
-    setReadmeContent(content);
+    return readme;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(readmeContent);
+  const handleCopy = async () => {
+    const readme = generateReadme();
+    await navigator.clipboard.writeText(readme);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const downloadReadme = () => {
-    const blob = new Blob([readmeContent], { type: "text/markdown" });
+  const handleDownload = () => {
+    const readme = generateReadme();
+    const blob = new Blob([readme], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -173,46 +168,50 @@ export default function ReadmeSheet({
     URL.revokeObjectURL(url);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div
-      className={`fixed inset-y-0 right-0 w-full md:w-3/4 lg:w-1/2 bg-white shadow-[-8px_0_0_#000] border-l-4 border-black transform transition-transform duration-300 ease-in-out z-50 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
-      <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-4 border-b-2 border-black">
-          <h2 className="text-xl font-bold">Generated README</h2>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-md hover:bg-gray-100 transition-colors"
-          >
-            <X size={20} />
-          </button>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-end z-50">
+      <div className="bg-white w-full max-w-4xl h-full overflow-y-auto p-8 relative">
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold mb-2">Your README</h2>
+          <p className="text-gray-600">
+            Preview and download your generated README file
+          </p>
         </div>
 
-        <div className="flex-1 overflow-auto p-4">
-          <div className="prose max-w-none">
-            <pre className="whitespace-pre-wrap font-mono text-sm bg-gray-50 p-4 rounded-lg border border-gray-200">
-              {readmeContent}
-            </pre>
-          </div>
-        </div>
-
-        <div className="p-4 border-t-2 border-black flex justify-between">
+        {/* Action buttons */}
+        <div className="flex gap-4 mb-8">
           <button
-            onClick={copyToClipboard}
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            onClick={handleCopy}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
-            {copied ? <Check size={18} /> : <Copy size={18} />}
+            <Copy size={20} />
             {copied ? "Copied!" : "Copy to Clipboard"}
           </button>
           <button
-            onClick={downloadReadme}
-            className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
           >
-            <Download size={18} />
+            <Download size={20} />
             Download README.md
           </button>
+        </div>
+
+        {/* Preview */}
+        <div className="bg-gray-100 rounded-lg p-6 border border-gray-300">
+          <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800">
+            {generateReadme()}
+          </pre>
         </div>
       </div>
     </div>
