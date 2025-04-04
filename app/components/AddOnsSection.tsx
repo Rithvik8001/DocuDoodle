@@ -21,6 +21,12 @@ import {
   Flame,
   Languages,
   GitBranch,
+  Trash2,
+  Edit2,
+  Save,
+  Award,
+  Heart,
+  Quote as QuoteIcon,
 } from "lucide-react";
 
 // Predefined badges
@@ -357,6 +363,28 @@ export default function AddOnsSection() {
     }));
   };
 
+  const getBadgeIcon = (type: string) => {
+    switch (type) {
+      case "github":
+        return <Code size={18} />;
+      case "social":
+        return <Link size={18} />;
+      case "tech":
+        return <Award size={18} />;
+      default:
+        return <Star size={18} />;
+    }
+  };
+
+  const getStatIcon = (type: string) => {
+    switch (type) {
+      case "github":
+        return <Code size={18} />;
+      default:
+        return <Award size={18} />;
+    }
+  };
+
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl shadow-[8px_8px_0_#000] border-4 border-black my-8 mx-4 relative overflow-hidden">
       {/* Paper texture overlay */}
@@ -487,39 +515,7 @@ export default function AddOnsSection() {
                       : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
                   } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
                 >
-                  {badge.type === "github" && (
-                    <Star
-                      size={18}
-                      className={
-                        badge.selected ? "text-black" : "text-gray-600"
-                      }
-                    />
-                  )}
-                  {badge.type === "social" && (
-                    <Link
-                      size={18}
-                      className={
-                        badge.selected ? "text-black" : "text-gray-600"
-                      }
-                    />
-                  )}
-                  {badge.type === "tech" && (
-                    <Code
-                      size={18}
-                      className={
-                        badge.selected ? "text-black" : "text-gray-600"
-                      }
-                    />
-                  )}
-                  {badge.type === "custom" && (
-                    <Image
-                      size={18}
-                      className={
-                        badge.selected ? "text-black" : "text-gray-600"
-                      }
-                    />
-                  )}
-
+                  {getBadgeIcon(badge.type)}
                   <span>{badge.name}</span>
 
                   {badge.selected ? (
@@ -590,10 +586,7 @@ export default function AddOnsSection() {
                       : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
                   } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
                 >
-                  <Activity
-                    size={18}
-                    className={stat.selected ? "text-black" : "text-gray-600"}
-                  />
+                  {getStatIcon(stat.type)}
                   <span>{stat.name}</span>
 
                   {stat.selected ? (
@@ -664,7 +657,7 @@ export default function AddOnsSection() {
                       : "bg-white text-gray-700 shadow-[2px_2px_0_#000]"
                   } hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]`}
                 >
-                  <MessageSquare
+                  <QuoteIcon
                     size={18}
                     className={quote.selected ? "text-black" : "text-gray-600"}
                   />

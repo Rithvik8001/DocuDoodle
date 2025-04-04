@@ -18,6 +18,8 @@ import {
   Mail,
   Phone,
   MapPin,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 // Predefined socials
@@ -240,7 +242,10 @@ export default function SocialsSection() {
         <div className="bg-white p-6 rounded-lg border-2 border-black shadow-[4px_4px_0_#000] relative">
           <div className="absolute top-0 right-0 w-16 h-16 bg-purple-300 rounded-tr-lg border-b-2 border-l-2 border-black transform rotate-6"></div>
 
-          <h3 className="text-xl font-bold mb-4 text-black">Social Media</h3>
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-black mb-1">Social Media</h3>
+            <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {socialsData.socials
@@ -258,12 +263,18 @@ export default function SocialsSection() {
               )
               .map((social) => (
                 <div key={social.id} className="relative group">
-                  <div className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]">
-                    <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className={`p-3 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] ${
+                      social.selected ? "bg-gray-50" : ""
+                    }`}
+                  >
+                    <div
+                      className="flex items-center gap-3 mb-2 cursor-pointer"
+                      onClick={() => toggleSocial(social.id)}
+                    >
                       {getIconComponent(social.icon)}
                       <span className="font-semibold">{social.platform}</span>
                       <button
-                        onClick={() => toggleSocial(social.id)}
                         className={`ml-auto p-1 rounded-md transition-all duration-200 ${
                           social.selected
                             ? "bg-green-400 text-black"
@@ -271,24 +282,39 @@ export default function SocialsSection() {
                         }`}
                       >
                         {social.selected ? (
-                          <Check size={14} />
+                          <ChevronUp size={14} />
                         ) : (
-                          <X size={14} />
+                          <ChevronDown size={14} />
                         )}
                       </button>
                     </div>
 
                     {social.selected && (
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          value={social.username}
-                          onChange={(e) =>
-                            updateSocialUsername(social.id, e.target.value)
-                          }
-                          placeholder={`${social.platform} Username`}
-                          className="p-2 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-400 text-black"
-                        />
+                      <div className="mt-2 pt-2 border-t border-dashed border-gray-300">
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            {getIconComponent(social.icon)}
+                          </div>
+                          <input
+                            type="text"
+                            value={social.username}
+                            onChange={(e) =>
+                              updateSocialUsername(social.id, e.target.value)
+                            }
+                            placeholder={`${social.platform} Username (e.g., johndoe)`}
+                            className="p-2 pl-10 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-500 text-black"
+                          />
+                        </div>
+                        <div className="mt-2 text-xs text-gray-500">
+                          <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {social.url}
+                          </a>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -301,9 +327,12 @@ export default function SocialsSection() {
         <div className="bg-white p-6 rounded-lg border-2 border-black shadow-[4px_4px_0_#000] relative">
           <div className="absolute top-0 right-0 w-16 h-16 bg-teal-300 rounded-tr-lg border-b-2 border-l-2 border-black transform -rotate-6"></div>
 
-          <h3 className="text-xl font-bold mb-4 text-black">
-            Contact Information
-          </h3>
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-black mb-1">
+              Contact Information
+            </h3>
+            <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {socialsData.socials
@@ -312,12 +341,18 @@ export default function SocialsSection() {
               )
               .map((social) => (
                 <div key={social.id} className="relative group">
-                  <div className="p-3 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000]">
-                    <div className="flex items-center gap-3 mb-2">
+                  <div
+                    className={`p-3 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0_#000] ${
+                      social.selected ? "bg-gray-50" : ""
+                    }`}
+                  >
+                    <div
+                      className="flex items-center gap-3 mb-2 cursor-pointer"
+                      onClick={() => toggleSocial(social.id)}
+                    >
                       {getIconComponent(social.icon)}
                       <span className="font-semibold">{social.platform}</span>
                       <button
-                        onClick={() => toggleSocial(social.id)}
                         className={`ml-auto p-1 rounded-md transition-all duration-200 ${
                           social.selected
                             ? "bg-green-400 text-black"
@@ -325,32 +360,47 @@ export default function SocialsSection() {
                         }`}
                       >
                         {social.selected ? (
-                          <Check size={14} />
+                          <ChevronUp size={14} />
                         ) : (
-                          <X size={14} />
+                          <ChevronDown size={14} />
                         )}
                       </button>
                     </div>
 
                     {social.selected && (
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          value={social.username}
-                          onChange={(e) =>
-                            updateSocialUsername(social.id, e.target.value)
-                          }
-                          placeholder={`${social.platform} ${
-                            social.id === "email"
-                              ? "Address"
-                              : social.id === "phone"
-                              ? "Number"
-                              : social.id === "location"
-                              ? "Details"
-                              : "URL"
-                          }`}
-                          className="p-2 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-400 text-black"
-                        />
+                      <div className="mt-2 pt-2 border-t border-dashed border-gray-300">
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            {getIconComponent(social.icon)}
+                          </div>
+                          <input
+                            type="text"
+                            value={social.username}
+                            onChange={(e) =>
+                              updateSocialUsername(social.id, e.target.value)
+                            }
+                            placeholder={`${social.platform} ${
+                              social.id === "email"
+                                ? "Address (e.g., john@example.com)"
+                                : social.id === "phone"
+                                ? "Number (e.g., +1 234 567 8900)"
+                                : social.id === "location"
+                                ? "Details (e.g., New York, USA)"
+                                : "URL (e.g., https://example.com)"
+                            }`}
+                            className="p-2 pl-10 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-500 text-black"
+                          />
+                        </div>
+                        <div className="mt-2 text-xs text-gray-500">
+                          <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {social.url}
+                          </a>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -363,32 +413,45 @@ export default function SocialsSection() {
         <div className="bg-white p-6 rounded-lg border-2 border-black shadow-[4px_4px_0_#000] relative">
           <div className="absolute top-0 right-0 w-16 h-16 bg-orange-300 rounded-tr-lg border-b-2 border-l-2 border-black transform rotate-3"></div>
 
-          <h3 className="text-xl font-bold mb-4 text-black">
-            Add Custom Social
-          </h3>
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-black mb-1">
+              Add Custom Social
+            </h3>
+            <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-            <input
-              type="text"
-              value={customSocial.platform}
-              onChange={(e) =>
-                setCustomSocial((prev) => ({
-                  ...prev,
-                  platform: e.target.value,
-                }))
-              }
-              placeholder="Platform Name"
-              className="p-2 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-400 text-black"
-            />
-            <input
-              type="text"
-              value={customSocial.url}
-              onChange={(e) =>
-                setCustomSocial((prev) => ({ ...prev, url: e.target.value }))
-              }
-              placeholder="Profile URL"
-              className="p-2 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-400 text-black"
-            />
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Globe size={18} />
+              </div>
+              <input
+                type="text"
+                value={customSocial.platform}
+                onChange={(e) =>
+                  setCustomSocial((prev) => ({
+                    ...prev,
+                    platform: e.target.value,
+                  }))
+                }
+                placeholder="Platform Name (e.g., Medium)"
+                className="p-2 pl-10 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-500 text-black"
+              />
+            </div>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Globe size={18} />
+              </div>
+              <input
+                type="text"
+                value={customSocial.url}
+                onChange={(e) =>
+                  setCustomSocial((prev) => ({ ...prev, url: e.target.value }))
+                }
+                placeholder="Profile URL (e.g., https://medium.com/@username)"
+                className="p-2 pl-10 border-2 border-black rounded-lg text-base bg-white shadow-[2px_2px_0_#000] transition-all duration-200 focus:outline-none focus:translate-x-[-1px] focus:translate-y-[-1px] focus:shadow-[3px_3px_0_#000] w-full placeholder:text-gray-500 text-black"
+              />
+            </div>
           </div>
           <button
             onClick={addCustomSocial}
